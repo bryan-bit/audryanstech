@@ -182,8 +182,23 @@ nav a:hover { text-shadow: 0 0 10px #0ff; }
   font-size: 20px;
   transition: background-color 0.3s;
 }
+#myButton {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #0a84ff;
+  color: white;
+  text-decoration: none; /* removes underline */
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+#myButton:hover {
+  background-color: #0056b3;
+}
 
 #backToTop:hover {
   background-color: #0056b3; /* Hover color */
 }
+
 
