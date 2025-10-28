@@ -205,21 +205,5 @@ document.addEventListener('DOMContentLoaded', () => {
   updateBasketUI();
 });
 
-<script>
-  // Get the button
-  const backToTopButton = document.getElementById("backToTop");
 
-  // Show button when user scrolls down 100px
-  window.onscroll = function() {
-    if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
-      backToTopButton.style.display = "block";
-    } else {
-      backToTopButton.style.display = "none";
-    }
-  };
 
-  // Scroll to top smoothly when clicked
-  backToTopButton.addEventListener("click", () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
-</script>
