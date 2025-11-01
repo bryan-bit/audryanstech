@@ -204,3 +204,26 @@ document.addEventListener('DOMContentLoaded', () => {
   // initial UI update
   updateBasketUI();
 });
+<script>
+  const conversionRate = 130; // 1 USD = 130 KES (you can update this)
+  
+  const currencySelect = document.getElementById("currency");
+  const priceElements = document.querySelectorAll(".price");
+  
+  currencySelect.addEventListener("change", () => {
+    const selectedCurrency = currencySelect.value;
+    
+    priceElements.forEach(price => {
+      const priceValue = price.querySelector(".price-value");
+      let kesAmount = parseFloat(priceValue.dataset.kes); // base KES price
+
+      if (selectedCurrency === "USD") {
+        let usd = (kesAmount / conversionRate).toFixed(2);
+        price.innerHTML = `$ <span class="price-value" data-kes="${kesAmount}">${usd}</span>`;
+      } else {
+        price.innerHTML = `KSh <span class="price-value" data-kes="${kesAmount}">${kesAmount}</span>`;
+      }
+    });
+  });
+</script>
+
