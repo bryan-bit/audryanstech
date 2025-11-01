@@ -204,26 +204,49 @@ document.addEventListener('DOMContentLoaded', () => {
   // initial UI update
   updateBasketUI();
 });
-<script>
-  const conversionRate = 130; // 1 USD = 130 KES (you can update this)
-  
-  const currencySelect = document.getElementById("currency");
-  const priceElements = document.querySelectorAll(".price");
-  
-  currencySelect.addEventListener("change", () => {
-    const selectedCurrency = currencySelect.value;
-    
-    priceElements.forEach(price => {
-      const priceValue = price.querySelector(".price-value");
-      let kesAmount = parseFloat(priceValue.dataset.kes); // base KES price
+const conversionRate = 129.88; // 1 USD = 129.88 KES
+const currencySelect = document.getElementById("currency");
+const priceElements = document.querySelectorAll(".service-card");
 
-      if (selectedCurrency === "USD") {
-        let usd = (kesAmount / conversionRate).toFixed(2);
-        price.innerHTML = `$ <span class="price-value" data-kes="${kesAmount}">${usd}</span>`;
-      } else {
-        price.innerHTML = `KSh <span class="price-value" data-kes="${kesAmount}">${kesAmount}</span>`;
-      }
-    });
+function convertPrices() {
+  const selectedCurrency = currencySelect.value;
+
+  priceElements.forEach(card => {
+    const priceText = card.querySelector(".price");
+    const priceValue = card.querySelector(".price-value");
+    const kesAmount = parseFloat(priceValue.dataset.kes);
+
+    if (selectedCurrency === "USD") {
+      const usd = (kesAmount / conversionRate).toFixed(2);
+      priceText.innerHTML = `$ <span class="price-value" data-kes="${kesAmount}">${usd}</span>`;
+    } else {
+      priceText.innerHTML = `KSh <span class="price-value" data-kes="${kesAmount}">${kesAmount}</span>`;
+    }
   });
-</script>
+}
+
+function handleOptionChange(event) {
+  const card = event.target.closest(".service-card");
+  const priceText = card.querySelector(".price");
+  const priceValue = card.querySelector(".price-value");
+  const newKES = parseFloat(event.target.value);
+
+  priceValue.dataset.kes = newKES;
+
+  if (currencySelect.value === "USD") {
+    const usd = (newKES / conversionRate).toFixed(2);
+    priceText.innerHTML = `$ <span class="price-value" data-kes="${newKES}">${usd}</span>`;
+  } else {
+    priceText.innerHTML = `KSh <span class="price-value" data-kes="${newKES}">${newKES}</span>`;
+  }
+}
+
+currencySelect.addEventListener("change", convertPrices);
+document.querySelectorAll(".price-select").forEach(select => {
+  select.addEventListener("change", handleOptionChange);
+});
+
+window.addEventListener("DOMContentLoaded", convertPrices);
+
+
 
