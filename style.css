@@ -166,3 +166,16 @@ nav a:hover { text-shadow: 0 0 10px #0ff; }
   .service-card img { height:120px; }
   header { flex-direction: column; gap:12px; align-items:flex-start; }
 }
+
+.currency-selector {
+  text-align: right;
+  margin: 15px 20px;
+}
+
+.currency-selector select {
+  padding: 5px 10px;
+  background: #111;
+  color: #fff;
+  border: 1px solid #444;
+  border-radius: 5px;
+}
