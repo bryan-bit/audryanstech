@@ -205,49 +205,56 @@ document.addEventListener('DOMContentLoaded', () => {
   updateBasketUI();
 });
 
-const conversionRate = 129.88; // 1 USD = 129.88 KES
-const currencySelect = document.getElementById("currency");
-const priceElements = document.querySelectorAll(".service-card");
+document.addEventListener("DOMContentLoaded", () => {
+  const conversionRate = 129.88; // 1 USD = 129.88 KES
+  const currencySelect = document.getElementById("currency");
+  const serviceCards = document.querySelectorAll(".service-card");
 
-function convertPrices() {
-  const selectedCurrency = currencySelect.value;
+  // Function to convert all displayed prices based on selected currency
+  function convertPrices() {
+    const selectedCurrency = currencySelect.value;
 
-  priceElements.forEach(card => {
+    serviceCards.forEach(card => {
+      const priceText = card.querySelector(".price");
+      const priceValue = card.querySelector(".price-value");
+      const kesAmount = parseFloat(priceValue.dataset.kes);
+
+      if (selectedCurrency === "USD") {
+        const usdAmount = (kesAmount / conversionRate).toFixed(2);
+        priceText.innerHTML = `$ <span class="price-value" data-kes="${kesAmount}">${usdAmount}</span>`;
+      } else {
+        priceText.innerHTML = `KSh <span class="price-value" data-kes="${kesAmount}">${kesAmount}</span>`;
+      }
+    });
+  }
+
+  // Update price when the pack selection changes (e.g. 1 Year or 30 Credits)
+  function handleOptionChange(event) {
+    const card = event.target.closest(".service-card");
     const priceText = card.querySelector(".price");
     const priceValue = card.querySelector(".price-value");
-    const kesAmount = parseFloat(priceValue.dataset.kes);
+    const newKES = parseFloat(event.target.value);
+    priceValue.dataset.kes = newKES;
 
-    if (selectedCurrency === "USD") {
-      const usd = (kesAmount / conversionRate).toFixed(2);
-      priceText.innerHTML = `$ <span class="price-value" data-kes="${kesAmount}">${usd}</span>`;
+    if (currencySelect.value === "USD") {
+      const usd = (newKES / conversionRate).toFixed(2);
+      priceText.innerHTML = `$ <span class="price-value" data-kes="${newKES}">${usd}</span>`;
     } else {
-      priceText.innerHTML = `KSh <span class="price-value" data-kes="${kesAmount}">${kesAmount}</span>`;
+      priceText.innerHTML = `KSh <span class="price-value" data-kes="${newKES}">${newKES}</span>`;
     }
-  });
-}
-
-function handleOptionChange(event) {
-  const card = event.target.closest(".service-card");
-  const priceText = card.querySelector(".price");
-  const priceValue = card.querySelector(".price-value");
-  const newKES = parseFloat(event.target.value);
-
-  priceValue.dataset.kes = newKES;
-
-  if (currencySelect.value === "USD") {
-    const usd = (newKES / conversionRate).toFixed(2);
-    priceText.innerHTML = `$ <span class="price-value" data-kes="${newKES}">${usd}</span>`;
-  } else {
-    priceText.innerHTML = `KSh <span class="price-value" data-kes="${newKES}">${newKES}</span>`;
   }
-}
 
-currencySelect.addEventListener("change", convertPrices);
-document.querySelectorAll(".price-select").forEach(select => {
-  select.addEventListener("change", handleOptionChange);
+  // Event listeners
+  currencySelect.addEventListener("change", convertPrices);
+  document.querySelectorAll(".price-select").forEach(select => {
+    select.addEventListener("change", handleOptionChange);
+  });
+
+  // Default: show KES on load
+  convertPrices();
 });
 
-window.addEventListener("DOMContentLoaded", convertPrices);
+
 
 
 
