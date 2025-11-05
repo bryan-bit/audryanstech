@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contact Us - Auditech GSM Services</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- HEADER -->
+  <header>
+    <h1 class="logo">⚡ Auditech GSM Services ⚡</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="contact.html" class="active">Contact</a>
+      <a href="https://wa.me/254725820123" target="_blank">WhatsApp</a>
+      <a href="https://t.me/auditech21" target="_blank">Telegram</a>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section id="hero">
+    <h2>Contact Us</h2>
+    <p>Reach out for enquiries, support, or tool rental services.</p>
+  </section>
+
+  <!-- CONTACT SECTION -->
+  <section class="section" id="contact">
+    <h2 class="section-title">Send Us a Message</h2>
+
+    <div class="contact-grid">
+      <!-- Contact Form -->
+      <div class="contact-form">
+        <form id="contactForm">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" name="name" placeholder="Enter your name" required>
+
+          <label for="email">Email / Telegram</label>
+          <input type="text" id="email" name="email" placeholder="Enter your email or Telegram handle" required>
+
+          <label for="message">Message / Enquiry</label>
+          <textarea id="message" name="message" rows="5" placeholder="Type your message..." required></textarea>
+
+          <button type="submit" class="add-btn">Send Message</button>
+        </form>
+      </div>
+
+      <!-- Direct Contact Links -->
+      <div class="contact-details">
+        <h3>Contact Channels</h3>
+        <p>You can also reach us directly through:</p>
+        <a href="https://wa.me/254725820123" target="_blank" class="add-btn">💬 WhatsApp</a>
+        <a href="https://t.me/auditech21" target="_blank" class="add-btn">📲 Telegram</a>
+
+        <h3 style="margin-top:2rem;">Our Location</h3>
+        <p>Ulinzi Complex Stadium, Nairobi, Kenya</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOOL RENT SECTION -->
+  <section class="section" id="tool-rent">
+    <h2 class="section-title">Tool Rental Services</h2>
+    <p style="text-align:center; max-width:700px; margin:auto;">
+      Auditech offers short-term GSM tool rentals for technicians and businesses.
+      Rent daily or weekly access for professional unlocking, flashing, and diagnostics.
+    </p>
+
+    <div class="services-grid" style="margin-top:2rem;">
+      <div class="service-card">
+        <img src="icons/hydra.png" alt="Hydra Tool">
+        <h3>Hydra Tool (1 Day)</h3>
+        <p>Daily temporary access</p>
+        <p class="price">KSh <span class="price-value">600</span></p>
+        <button class="add-btn">Rent Now</button>
+      </div>
+
+      <div class="service-card">
+        <img src="icons/cm2.png" alt="CM2 Dongle">
+        <h3>CM2 Dongle (1 Day)</h3>
+        <p>For quick repair and flashing tasks</p>
+        <p class="price">KSh <span class="price-value">700</span></p>
+        <button class="add-btn">Rent Now</button>
+      </div>
+
+      <div class="service-card">
+        <img src="icons/z3x.png" alt="Z3X Tool">
+        <h3>Z3X Samsung Tool (1 Day)</h3>
+        <p>Ideal for short unlocking jobs</p>
+        <p class="price">KSh <span class="price-value">800</span></p>
+        <button class="add-btn">Rent Now</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2025 Auditech GSM Services — All Rights Reserved.</p>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    // Send message via Telegram
+    document.getElementById("contactForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const message = document.getElementById("message").value;
+      const text = `📩 New Contact Message:%0A👤 Name: ${name}%0A📧 Contact: ${email}%0A📝 Message: ${message}`;
+      window.open(`https://t.me/auditech21?text=${text}`, "_blank");
+    });
+  </script>
+</body>
+</html>
