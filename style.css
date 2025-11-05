@@ -1,169 +1,204 @@
-/* Base */
-* { box-sizing: border-box; }
+/* -------- General Page Styling -------- */
 body {
-  font-family: Arial, sans-serif;
-  background: #000;
-  color: #fff;
   margin: 0;
-  padding: 0;
-  line-height: 1.4;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #0a0f2c, #09203f, #2c5364);
+  color: #fff;
+  scroll-behavior: smooth;
 }
 
 /* Header */
 header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #111;
-  color: #0ff;
-  padding: 12px 20px;
-  box-shadow: 0 0 10px #0ff;
+  background: rgba(0, 0, 0, 0.85);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+  padding: 0.8rem 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
-.logo { margin: 0; font-size: 18px; }
+header .logo {
+  font-size: 1.3rem;
+  text-align: center;
+  color: #00e5ff;
+}
+nav {
+  text-align: center;
+  margin-top: 0.5rem;
+}
 nav a {
-  color: #0ff;
-  margin-left: 16px;
+  color: #fff;
   text-decoration: none;
-  font-weight: bold;
-  cursor: pointer;
+  margin: 0 8px;
+  font-weight: 500;
+  transition: 0.3s;
 }
-nav a:hover { text-shadow: 0 0 10px #0ff; }
-
-.basket-btn {
-  position: relative;
-  background: #0ff;
-  color: #111;
-  padding: 8px 12px;
-  border-radius: 8px;
-  text-decoration: none;
-  transition: 0.2s;
-}
-.basket-btn:hover { background: #fff; color: #000; box-shadow: 0 0 10px #0ff; }
-.basket-count {
-  position: absolute;
-  top: -6px;
-  right: -6px;
-  background: red;
-  color: white;
-  font-size: 12px;
-  font-weight: bold;
-  border-radius: 50%;
-  padding: 2px 6px;
+nav a:hover, nav .active {
+  color: #00f5d4;
 }
 
-/* Hero */
+/* Hero Section */
 #hero {
   text-align: center;
-  padding: 40px 20px;
-  background: linear-gradient(180deg, rgba(0,255,255,0.05), #000);
+  background: linear-gradient(135deg, #1a2980, #26d0ce);
+  color: #fff;
+  padding: 3rem 1rem;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.25);
+}
+#hero h2 {
+  font-size: 1.8rem;
+}
+#hero p {
+  font-size: 1rem;
+  color: #e0e0e0;
 }
 
-/* Sections */
-.section { padding: 30px 20px; }
+/* Currency Selector */
+.currency-selector {
+  text-align: center;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 0.6rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.currency-selector label {
+  color: #00f0ff;
+  margin-right: 8px;
+}
+
+/* Section Titles */
 .section-title {
-  font-size: 22px;
-  color: #0ff;
-  margin-bottom: 20px;
-  text-transform: uppercase;
+  text-align: center;
+  font-size: 1.6rem;
+  color: #00f2fe;
+  margin-top: 2rem;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
 }
 
-/* Grid & cards */
+/* -------- Service Cards Grid -------- */
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1.5rem;
+  padding: 2rem;
+  justify-items: center;
 }
-.service-card {
-  background: #111;
-  border-radius: 12px;
-  padding: 12px;
-  box-shadow: 0 0 10px rgba(0,255,255,0.12);
-  transition: transform 0.18s, box-shadow 0.18s;
-}
-.service-card:hover { transform: translateY(-4px); box-shadow: 0 0 18px rgba(0,255,255,0.18); }
-.service-card img {
-  display:block;
-  width:100%;
-  height:160px;
-  object-fit:cover;
-  border-radius: 8px;
-  margin-bottom: 8px;
-}
-.service-card h3 { margin: 6px 0; font-size: 18px; color: #0ff; }
-.service-card p { margin: 6px 0; color: #ddd; }
 
-/* price & controls */
-.price { margin-top: 8px; font-weight: bold; color: #0ff; }
-.price-value { color: #0ff; font-weight: 700; }
+/* -------- Individual Cards -------- */
+.service-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  padding: 1rem;
+  text-align: center;
+  width: 230px;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+  background: rgba(0, 0, 0, 0.4);
+}
+
+/* Images inside cards */
+.service-card img {
+  width: 100%;
+  height: 140px;
+  object-fit: contain;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* Text in cards */
+.service-card h3 {
+  font-size: 1rem;
+  color: #00e5ff;
+  margin: 0.5rem 0;
+}
+.service-card p {
+  font-size: 0.9rem;
+  color: #ccc;
+  margin: 0.4rem 0;
+}
+.price {
+  color: #00ffb3;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+/* Dropdowns and buttons */
 .price-select {
-  margin-top: 6px;
-  padding: 6px;
-  border-radius: 6px;
+  width: 100%;
+  padding: 0.5rem;
+  margin: 0.5rem 0;
+  border-radius: 8px;
   border: none;
+  background: rgba(0, 255, 255, 0.1);
+  color: #fff;
+  font-size: 0.9rem;
+}
+.price-select:focus {
+  outline: 2px solid #00ffff;
 }
 
 /* Buttons */
 .add-btn {
-  margin-top: 8px;
-  background: #0ff;
+  display: inline-block;
+  background: linear-gradient(135deg, #00f2fe, #4facfe);
   color: #000;
   border: none;
+  padding: 0.5rem 1rem;
   border-radius: 8px;
-  padding: 8px 12px;
-  font-weight: bold;
+  font-weight: 600;
+  margin-top: 0.5rem;
   cursor: pointer;
+  transition: 0.3s;
 }
-.add-btn:hover { background: #fff; color: #000; box-shadow: 0 0 10px #0ff; }
+.add-btn:hover {
+  background: linear-gradient(135deg, #43e97b, #38f9d7);
+  transform: scale(1.05);
+}
 
-/* Popup */
+/* Basket Popup */
 .popup {
-  display: none;
   position: fixed;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%) scale(0);
   background: #111;
-  border: 2px solid #0ff;
-  border-radius: 12px;
-  box-shadow: 0 0 18px #0ff;
-  padding: 18px;
-  width: 92%;
-  max-width: 520px;
-  z-index: 9999;
-  max-height: 80vh;
-  overflow-y: auto;
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+  z-index: 999;
+  transition: transform 0.3s ease-in-out;
+  width: 90%;
+  max-width: 400px;
+  color: #fff;
 }
-.popup h3 { color: #0ff; margin-top: 0; }
-#basketList { list-style: none; padding: 0; margin: 10px 0; }
-#basketList li {
-  background: rgba(255,255,255,0.02);
-  padding: 8px;
-  border-radius: 6px;
-  margin-bottom: 8px;
-  display:flex;
-  justify-content: space-between;
-  gap: 10px;
-  align-items:center;
+.popup.active {
+  transform: translate(-50%, -50%) scale(1);
 }
-.item-controls { display:flex; gap:8px; align-items:center; }
-.qty { width:52px; padding:4px; border-radius:6px; text-align:center; border: none; }
-
-/* Basket summary & buttons */
-.basket-summary { display:flex; flex-direction:column; gap:10px; align-items:center; margin-top:8px; }
-#orderNowBtn, #clearBasketBtn, .close-btn {
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: none;
-  font-weight: bold;
-  cursor: pointer;
+.popup h3 {
+  text-align: center;
+  color: #00f2fe;
 }
-#orderNowBtn { background:#0ff; color:#000; }
-#clearBasketBtn { background: transparent; color:#0ff; border: 1px solid #0ff; }
-.close-btn { background: red; color: #fff; }
-
-/* small screen tweaks */
-@media (max-width:480px){
-  .service-card img { height:120px; }
-  header { flex-direction: column; gap:12px; align-items:flex-start; }
+.basket-summary {
+  text-align: center;
+  margin-top: 1rem;
+}
+.secondary {
+  background: #ff4757;
+  color: #fff;
+}
+.close-btn {
+  margin-top: 0.8rem;
+  background: #333;
+  color: #fff;
 }
 
+/* Footer */
+footer {
+  text-align: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.8);
+  color: #aaa;
+  margin-top: 2rem;
+}
