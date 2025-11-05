@@ -5,6 +5,153 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Contact Us - Auditech GSM Services</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    /* ---------- PAGE COLORS & LAYOUT ---------- */
+    body {
+      background: linear-gradient(135deg, #000428, #004e92);
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: rgba(0, 0, 0, 0.7);
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+    }
+
+    #hero {
+      text-align: center;
+      padding: 3rem 1rem;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #0ff;
+      box-shadow: 0 4px 15px rgba(0, 255, 255, 0.15);
+    }
+
+    #hero h2 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    #hero p {
+      color: #ccc;
+      font-size: 1.1rem;
+    }
+
+    /* ---------- CONTACT GRID ---------- */
+    .contact-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .contact-form,
+    .contact-details {
+      flex: 1;
+      min-width: 300px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.15);
+    }
+
+    /* ---------- FORM STYLING ---------- */
+    form label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: 500;
+      color: #0ff;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 0.8rem;
+      border: none;
+      border-radius: 8px;
+      margin-top: 0.5rem;
+      background: rgba(0, 0, 0, 0.4);
+      color: #fff;
+      font-size: 1rem;
+    }
+
+    input:focus, textarea:focus {
+      outline: 2px solid #0ff;
+      background: rgba(0, 0, 0, 0.6);
+    }
+
+    .add-btn {
+      display: inline-block;
+      margin-top: 1.5rem;
+      background: linear-gradient(135deg, #00f2fe, #4facfe);
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 10px;
+      cursor: pointer;
+      color: #000;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .add-btn:hover {
+      background: linear-gradient(135deg, #43e97b, #38f9d7);
+      transform: scale(1.05);
+    }
+
+    /* ---------- CONTACT DETAILS ---------- */
+    .contact-details h3 {
+      color: #0ff;
+    }
+
+    .contact-details p {
+      color: #ccc;
+    }
+
+    .contact-details a {
+      display: block;
+      margin: 1rem 0;
+      text-align: center;
+    }
+
+    /* ---------- TOOL RENT SECTION ---------- */
+    #tool-rent {
+      text-align: center;
+      margin-top: 3rem;
+      background: linear-gradient(135deg, #1a2980, #26d0ce);
+      padding: 3rem 1rem;
+      border-radius: 20px;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+    }
+
+    #tool-rent h2 {
+      color: #fff;
+      margin-bottom: 1rem;
+    }
+
+    #tool-rent p {
+      color: #f1f1f1;
+      font-size: 1.1rem;
+      max-width: 700px;
+      margin: auto;
+    }
+
+    /* ---------- FOOTER ---------- */
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      background: rgba(0, 0, 0, 0.8);
+      color: #aaa;
+      margin-top: 3rem;
+    }
+
+    @media (max-width: 768px) {
+      .contact-grid {
+        flex-direction: column;
+      }
+    }
+  </style>
 </head>
 <body>
   <!-- HEADER -->
@@ -22,12 +169,12 @@
   <!-- HERO -->
   <section id="hero">
     <h2>Contact Us</h2>
-    <p>Reach out for enquiries, support, or tool rental services.</p>
+    <p>We’d love to hear from you! Get in touch for enquiries or tool rentals.</p>
   </section>
 
   <!-- CONTACT SECTION -->
   <section class="section" id="contact">
-    <h2 class="section-title">Send Us a Message</h2>
+    <h2 class="section-title" style="text-align:center;">Send Us a Message</h2>
 
     <div class="contact-grid">
       <!-- Contact Form -->
@@ -49,7 +196,7 @@
       <!-- Direct Contact Links -->
       <div class="contact-details">
         <h3>Contact Channels</h3>
-        <p>You can also reach us directly through:</p>
+        <p>Need quick support? Reach us directly through:</p>
         <a href="https://wa.me/254725820123" target="_blank" class="add-btn">💬 WhatsApp</a>
         <a href="https://t.me/auditech21" target="_blank" class="add-btn">📲 Telegram</a>
 
@@ -60,19 +207,19 @@
   </section>
 
   <!-- TOOL RENT SECTION -->
-  <section class="section" id="tool-rent">
-    <h2 class="section-title">Tool Rental Services</h2>
-    <p style="text-align:center; max-width:700px; margin:auto;">
-      Auditech offers short-term GSM tool rentals for technicians and businesses.
-      Rent daily or weekly access for professional unlocking, flashing, and diagnostics.
+  <section id="tool-rent">
+    <h2>Tool Rental Services</h2>
+    <p>
+      Need a professional GSM tool for a short time? We rent tools like Hydra, CM2, and Z3X for daily or weekly use.
+      Contact us to book your rental today!
     </p>
+  </section>
 
   <!-- FOOTER -->
   <footer>
     <p>© 2025 Auditech GSM Services — All Rights Reserved.</p>
   </footer>
 
-  <script src="script.js"></script>
   <script>
     // Send message via Telegram
     document.getElementById("contactForm").addEventListener("submit", function(e) {
@@ -86,5 +233,3 @@
   </script>
 </body>
 </html>
-
-
