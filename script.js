@@ -1,6 +1,17 @@
-// script.js - Fully functional basket & dynamic price updates
+// ===== COMPLETE SCRIPT.JS (BASKET + CURRENCY SYSTEM) =====
 
 document.addEventListener('DOMContentLoaded', () => {
+
+  console.log("System loaded ✔");
+
+  // =============================
+  // GLOBAL SETTINGS
+  // =============================
+  let currency = "KES";
+  let exchangeRate = 130; // 1 USD ≈ 130 KES
+
+  let basket = [];
+
   const basketBtn = document.getElementById('viewBasketBtn');
   const popup = document.getElementById('basketPopup');
   const basketCountEl = document.getElementById('basketCount');
@@ -9,209 +20,196 @@ document.addEventListener('DOMContentLoaded', () => {
   const orderNowBtn = document.getElementById('orderNowBtn');
   const clearBasketBtn = document.getElementById('clearBasketBtn');
   const closePopupBtn = document.getElementById('closePopupBtn');
+  const currencySelector = document.getElementById("currency");
 
-  // basket array: { id, name, price, qty }
-  let basket = [];
+  // =============================
+  // FORMAT PRICE
+  // =============================
+  function formatPrice(kes) {
+    if (currency === "USD") {
+      return "$" + (kes / exchangeRate).toFixed(2);
+    } else {
+      return "KSh " + kes;
+    }
+  }
 
-  // Helper: format integer price
-  function toInt(v){ return parseInt(v, 10) || 0; }
+  // =============================
+  // UPDATE ALL PRODUCT PRICES
+  // =============================
+  function updateAllPrices() {
+    document.querySelectorAll('.service-card').forEach(card => {
+      const pv = card.querySelector('.price-value');
+      if (!pv) return;
 
-  // Initialize credit options for places that used document.write in original
+      if (!pv.dataset.kes) {
+        pv.dataset.kes = pv.textContent.replace(/[^0-9]/g, '');
+      }
+
+      const kes = parseInt(pv.dataset.kes);
+      pv.textContent = formatPrice(kes);
+    });
+  }
+
+  // =============================
+  // CURRENCY SWITCH
+  // =============================
+  currencySelector.addEventListener("change", () => {
+    currency = currencySelector.value;
+    updateAllPrices();
+    updateBasketUI();
+  });
+
+  // =============================
+  // INIT CREDIT SELECTS
+  // =============================
   document.querySelectorAll('.credits-select').forEach(select => {
     select.innerHTML = '';
-    for (let i = 1; i <= 20; i++){
+    for (let i = 1; i <= 20; i++) {
       const opt = document.createElement('option');
       opt.value = i;
       opt.textContent = i;
       select.appendChild(opt);
     }
-    // default: 1
     select.value = '1';
   });
 
-  // Price update: when any .price-select changes, update sibling .price-value inside same card
+  // =============================
+  // PRICE SELECT HANDLING
+  // =============================
   document.querySelectorAll('.service-card').forEach(card => {
     const select = card.querySelector('.price-select');
     const creditsSelect = card.querySelector('.credits-select');
 
-    // Credits special case: Android WinTool credits price = credits * 150
     if (creditsSelect) {
       const CREDIT_PRICE = 150;
       function updateCredits() {
-        const qty = toInt(creditsSelect.value);
+        const qty = parseInt(creditsSelect.value);
         const total = qty * CREDIT_PRICE;
         const pv = card.querySelector('.price-value');
-        if (pv) pv.textContent = total;
+        pv.dataset.kes = total;
+        pv.textContent = formatPrice(total);
       }
       creditsSelect.addEventListener('change', updateCredits);
       updateCredits();
     }
 
-    // generic price-select behavior: set shown price to selected option value
     if (select) {
       function updateSelectPrice() {
         const pv = card.querySelector('.price-value');
-        if (!pv) return;
-        // some selects might be like "1 -> credits price" but we're using option.value as price.
-        const v = select.value;
-        pv.textContent = v;
+        const value = parseInt(select.value);
+        pv.dataset.kes = value;
+        pv.textContent = formatPrice(value);
       }
       select.addEventListener('change', updateSelectPrice);
       updateSelectPrice();
     }
   });
 
-  // Attach add button handlers: read name and visible price
-  document.querySelectorAll('.service-card .add-btn').forEach(btn => {
+  // =============================
+  // ADD TO BASKET
+  // =============================
+  document.querySelectorAll('.add-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       const card = e.target.closest('.service-card');
-      const name = (card.querySelector('h3')?.textContent || 'Service').trim();
+      const name = card.querySelector('h3').textContent;
       const pv = card.querySelector('.price-value');
-      const price = toInt(pv?.textContent || card.dataset.price || 0);
 
-      // Some cards display "Total: KSh 150" or "KSh 4000" — price-value should already be correct
+      const price = parseInt(pv.dataset.kes || pv.textContent.replace(/[^0-9]/g, ''));
+
       addToBasket(name, price);
     });
   });
 
-  // Add item to basket (if same name exists, increment qty)
   function addToBasket(name, price) {
-    if (!name || !price) {
-      alert('Could not determine service name or price. Please try again.');
-      return;
-    }
-    const existing = basket.find(it => it.name === name && it.price === price);
+    const existing = basket.find(item => item.name === name && item.price === price);
+
     if (existing) {
-      existing.qty += 1;
+      existing.qty++;
     } else {
-      basket.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2,6), name, price, qty: 1 });
+      basket.push({ id: Date.now(), name, price, qty: 1 });
     }
+
     updateBasketUI();
-    // briefly highlight basket button
-    flashBasket();
   }
 
-  function flashBasket(){
-    const el = document.getElementById('viewBasketBtn');
-    el.classList.add('flash');
-    setTimeout(()=> el.classList.remove('flash'), 400);
-  }
-
-  // Update basket DOM
+  // =============================
+  // UPDATE BASKET UI
+  // =============================
   function updateBasketUI() {
-    // count
-    const totalItems = basket.reduce((s, it) => s + it.qty, 0);
-    basketCountEl.textContent = totalItems;
 
-    // list
+    basketCountEl.textContent = basket.reduce((s, i) => s + i.qty, 0);
+
     basketListEl.innerHTML = '';
+
     basket.forEach(item => {
       const li = document.createElement('li');
 
-      // left: name & price
-      const left = document.createElement('div');
-      left.style.flex = '1';
-      left.innerHTML = `<strong>${escapeHtml(item.name)}</strong><div style="font-size:0.9rem;color:#bfe;">KSh ${item.price}</div>`;
-
-      // right: qty input & remove
-      const controls = document.createElement('div');
-      controls.className = 'item-controls';
-
-      const qtyInput = document.createElement('input');
-      qtyInput.type = 'number';
-      qtyInput.min = '1';
-      qtyInput.value = item.qty;
-      qtyInput.className = 'qty';
-      qtyInput.title = 'Change quantity';
-      qtyInput.addEventListener('change', (e) => {
-        const val = Math.max(1, toInt(e.target.value));
-        item.qty = val;
-        updateBasketUI();
-      });
-
-      const removeBtn = document.createElement('button');
-      removeBtn.textContent = 'Remove';
-      removeBtn.style.background = 'transparent';
-      removeBtn.style.color = '#ff7b7b';
-      removeBtn.style.border = '1px solid rgba(255,255,255,0.06)';
-      removeBtn.style.padding = '6px';
-      removeBtn.style.borderRadius = '6px';
-      removeBtn.addEventListener('click', () => {
-        basket = basket.filter(b => b.id !== item.id);
-        updateBasketUI();
-      });
-
-      controls.appendChild(qtyInput);
-      controls.appendChild(removeBtn);
-
-      li.appendChild(left);
-      li.appendChild(controls);
+      li.innerHTML = `
+        <div>
+          <strong>${item.name}</strong><br>
+          ${formatPrice(item.price)} x ${item.qty}
+        </div>
+      `;
 
       basketListEl.appendChild(li);
     });
 
-    // total
-    const total = basket.reduce((s, it) => s + it.price * it.qty, 0);
-    basketTotalEl.textContent = total;
+    const total = basket.reduce((s, i) => s + i.price * i.qty, 0);
+    basketTotalEl.textContent = formatPrice(total);
 
-    // disable order button if empty
     orderNowBtn.disabled = basket.length === 0;
     clearBasketBtn.disabled = basket.length === 0;
   }
 
-  // popup toggles
-basketBtn.addEventListener('click', () => {
-  popup.classList.add('active');
-});
+  // =============================
+  // POPUP CONTROL
+  // =============================
+  basketBtn.addEventListener('click', () => {
+    popup.classList.add('active');
+  });
 
-closePopupBtn.addEventListener('click', () => {
-  popup.classList.remove('active');
-});
-
-popup.addEventListener('click', (e) => {
-  if (e.target === popup) {
+  closePopupBtn.addEventListener('click', () => {
     popup.classList.remove('active');
-  }
-});
+  });
 
-  // clear basket
+  popup.addEventListener('click', (e) => {
+    if (e.target === popup) {
+      popup.classList.remove('active');
+    }
+  });
+
+  // =============================
+  // CLEAR BASKET
+  // =============================
   clearBasketBtn.addEventListener('click', () => {
-    if (!confirm('Clear entire basket?')) return;
     basket = [];
     updateBasketUI();
   });
 
-  // order now -> open Telegram link with encoded message and clear basket
+  // =============================
+  // ORDER (WHATSAPP)
+  // =============================
   orderNowBtn.addEventListener('click', () => {
-    if (basket.length === 0) return;
-    let message = "Hello Auditech, I'm placing an order for the following services:%0A";
-    basket.forEach(it => {
-      message += `- ${it.name} x${it.qty} (KSh ${it.price * it.qty})%0A`;
+    let message = "Hello, I want to order:%0A";
+
+    basket.forEach(item => {
+      message += `- ${item.name} x${item.qty} (${formatPrice(item.price * item.qty)})%0A`;
     });
-    const total = basket.reduce((s, it) => s + it.price * it.qty, 0);
-    message += `%0ATotal: KSh ${total}%0AThank you!`;
-    const telegramLink = `https://t.me/Auditechh?text=${message}`;
-    window.open(telegramLink, '_blank');
-    // after ordering, clear basket
+
+    const total = basket.reduce((s, i) => s + i.price * i.qty, 0);
+    message += `%0ATotal: ${formatPrice(total)}`;
+
+    window.open(`https://wa.me/254725820123?text=${message}`, '_blank');
+
     basket = [];
     updateBasketUI();
-    popup.style.display = 'none';
+    popup.classList.remove('active');
   });
 
-  // escapeHtml helper for safety in innerHTML usage
-  function escapeHtml(text) {
-    const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
-    return (text + '').replace(/[&<>"']/g, function(m) { return map[m]; });
-  }
-
-  // initial UI update
+  // =============================
+  // INIT
+  // =============================
+  updateAllPrices();
   updateBasketUI();
+
 });
-
-
-
-
-
-
-
-
