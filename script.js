@@ -1,26 +1,25 @@
-// ===== COMPLETE SCRIPT.JS (BASKET + CURRENCY SYSTEM) =====
-
 document.addEventListener('DOMContentLoaded', () => {
 
   console.log("System loaded ✔");
 
   // =============================
-  // GLOBAL SETTINGS
+  // SAFE ELEMENT GETTER
   // =============================
+  const get = (id) => document.getElementById(id);
+
+  const basketBtn = get('viewBasketBtn');
+  const popup = get('basketPopup');
+  const basketCountEl = get('basketCount');
+  const basketListEl = get('basketList');
+  const basketTotalEl = get('basketTotal');
+  const orderNowBtn = get('orderNowBtn');
+  const clearBasketBtn = get('clearBasketBtn');
+  const closePopupBtn = get('closePopupBtn');
+  const currencySelector = get('currency');
+
   let currency = "KES";
-  let exchangeRate = 130; // 1 USD ≈ 130 KES
-
+  let exchangeRate = 130;
   let basket = [];
-
-  const basketBtn = document.getElementById('viewBasketBtn');
-  const popup = document.getElementById('basketPopup');
-  const basketCountEl = document.getElementById('basketCount');
-  const basketListEl = document.getElementById('basketList');
-  const basketTotalEl = document.getElementById('basketTotal');
-  const orderNowBtn = document.getElementById('orderNowBtn');
-  const clearBasketBtn = document.getElementById('clearBasketBtn');
-  const closePopupBtn = document.getElementById('closePopupBtn');
-  const currencySelector = document.getElementById("currency");
 
   // =============================
   // FORMAT PRICE
@@ -28,79 +27,60 @@ document.addEventListener('DOMContentLoaded', () => {
   function formatPrice(kes) {
     if (currency === "USD") {
       return "$" + (kes / exchangeRate).toFixed(2);
-    } else {
-      return "KSh " + kes;
     }
+    return "KSh " + kes;
   }
 
   // =============================
-  // UPDATE ALL PRODUCT PRICES
+  // UPDATE ALL PRICES
   // =============================
- function updateAllPrices() {
+  function updateAllPrices() {
+    document.querySelectorAll('.service-card').forEach(card => {
+      const pv = card.querySelector('.price-value');
+      if (!pv) return;
+
+      if (!pv.dataset.kes) {
+        const raw = pv.textContent.replace(/[^0-9]/g, '');
+        pv.dataset.kes = parseInt(raw || 0);
+      }
+
+      const kes = parseInt(pv.dataset.kes);
+
+      pv.textContent = formatPrice(kes);
+    });
+  }
+
+  // =============================
+  // CURRENCY SWITCH (SAFE)
+  // =============================
+  if (currencySelector) {
+    currencySelector.addEventListener("change", () => {
+      currency = currencySelector.value;
+      console.log("Currency:", currency);
+      updateAllPrices();
+      updateBasketUI();
+    });
+  }
+
+  // =============================
+  // PRICE SELECTS
+  // =============================
   document.querySelectorAll('.service-card').forEach(card => {
-    const pv = card.querySelector('.price-value');
-    if (!pv) return;
+    const select = card.querySelector('.price-select');
 
-    // ALWAYS store original KES price ONCE
-    if (!pv.dataset.kes) {
-      const raw = pv.textContent.replace(/[^0-9]/g, '');
-      pv.dataset.kes = parseInt(raw || 0);
-    }
+    if (select) {
+      const pv = card.querySelector('.price-value');
 
-    const kes = parseInt(pv.dataset.kes);
+      const updatePrice = () => {
+        const value = parseInt(select.value);
+        pv.dataset.kes = value;
+        pv.textContent = formatPrice(value);
+      };
 
-    if (currency === "USD") {
-      pv.textContent = "$" + (kes / exchangeRate).toFixed(2);
-    } else {
-      pv.textContent = "KSh " + kes;
+      select.addEventListener('change', updatePrice);
+      updatePrice();
     }
   });
-}
-
-  // =============================
-  // CURRENCY SWITCH
-  // =============================
-  currencySelector.addEventListener("change", () => {
-    currency = currencySelector.value;
-    updateAllPrices();
-    updateBasketUI();
-  });
-  currencySelector.addEventListener("change", () => {
-  currency = currencySelector.value;
-  console.log("Currency switched to:", currency); // 👈 check this
-  updateAllPrices();
-  updateBasketUI();
-});
-
-  // =============================
-  // INIT CREDIT SELECTS
-  // =============================
-  document.querySelectorAll('.credits-select').forEach(select => {
-    select.innerHTML = '';
-    for (let i = 1; i <= 20; i++) {
-      const opt = document.createElement('option');
-      opt.value = i;
-      opt.textContent = i;
-      select.appendChild(opt);
-    }
-    select.value = '1';
-  });
-
-  // =============================
-  // PRICE SELECT HANDLING
-  // =============================
- if (select) {
-  function updateSelectPrice() {
-    const pv = card.querySelector('.price-value');
-    const value = parseInt(select.value);
-
-    pv.dataset.kes = value; // 🔥 THIS WAS MISSING
-    pv.textContent = formatPrice(value);
-  }
-
-  select.addEventListener('change', updateSelectPrice);
-  updateSelectPrice();
-}
 
   // =============================
   // ADD TO BASKET
@@ -108,31 +88,32 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.add-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       const card = e.target.closest('.service-card');
-      const name = card.querySelector('h3').textContent;
+      if (!card) return;
+
+      const name = card.querySelector('h3')?.textContent || "Item";
       const pv = card.querySelector('.price-value');
+
+      if (!pv || !pv.dataset.kes) return;
 
       const price = parseInt(pv.dataset.kes);
 
-      addToBasket(name, price);
+      const existing = basket.find(i => i.name === name && i.price === price);
+
+      if (existing) {
+        existing.qty++;
+      } else {
+        basket.push({ id: Date.now(), name, price, qty: 1 });
+      }
+
+      updateBasketUI();
     });
   });
-
-  function addToBasket(name, price) {
-    const existing = basket.find(item => item.name === name && item.price === price);
-
-    if (existing) {
-      existing.qty++;
-    } else {
-      basket.push({ id: Date.now(), name, price, qty: 1 });
-    }
-
-    updateBasketUI();
-  }
 
   // =============================
   // UPDATE BASKET UI
   // =============================
   function updateBasketUI() {
+    if (!basketCountEl || !basketListEl || !basketTotalEl) return;
 
     basketCountEl.textContent = basket.reduce((s, i) => s + i.qty, 0);
 
@@ -140,72 +121,76 @@ document.addEventListener('DOMContentLoaded', () => {
 
     basket.forEach(item => {
       const li = document.createElement('li');
-
       li.innerHTML = `
-        <div>
-          <strong>${item.name}</strong><br>
-          ${formatPrice(item.price)} x ${item.qty}
-        </div>
+        <strong>${item.name}</strong><br>
+        ${formatPrice(item.price)} x ${item.qty}
       `;
-
       basketListEl.appendChild(li);
     });
 
     const total = basket.reduce((s, i) => s + i.price * i.qty, 0);
     basketTotalEl.textContent = formatPrice(total);
 
-    orderNowBtn.disabled = basket.length === 0;
-    clearBasketBtn.disabled = basket.length === 0;
+    if (orderNowBtn) orderNowBtn.disabled = basket.length === 0;
+    if (clearBasketBtn) clearBasketBtn.disabled = basket.length === 0;
   }
 
   // =============================
-  // POPUP CONTROL
+  // POPUP (SAFE)
   // =============================
-  basketBtn.addEventListener('click', () => {
-    popup.classList.add('active');
-  });
+  if (basketBtn && popup) {
+    basketBtn.addEventListener('click', () => {
+      popup.classList.add('active');
+    });
+  }
 
-  closePopupBtn.addEventListener('click', () => {
-    popup.classList.remove('active');
-  });
-
-  popup.addEventListener('click', (e) => {
-    if (e.target === popup) {
+  if (closePopupBtn && popup) {
+    closePopupBtn.addEventListener('click', () => {
       popup.classList.remove('active');
-    }
-  });
+    });
+  }
+
+  if (popup) {
+    popup.addEventListener('click', (e) => {
+      if (e.target === popup) {
+        popup.classList.remove('active');
+      }
+    });
+  }
 
   // =============================
-  // CLEAR BASKET
+  // CLEAR
   // =============================
-  clearBasketBtn.addEventListener('click', () => {
-    basket = [];
-    updateBasketUI();
-  });
+  if (clearBasketBtn) {
+    clearBasketBtn.addEventListener('click', () => {
+      basket = [];
+      updateBasketUI();
+    });
+  }
 
   // =============================
   // ORDER (WHATSAPP)
   // =============================
-  orderNowBtn.addEventListener('click', () => {
-    let message = "Hello, I want to order:%0A";
+  if (orderNowBtn) {
+    orderNowBtn.addEventListener('click', () => {
+      let message = "Hello, I want to order:%0A";
 
-    basket.forEach(item => {
-      message += `- ${item.name} x${item.qty} (${formatPrice(item.price * item.qty)})%0A`;
+      basket.forEach(item => {
+        message += `- ${item.name} x${item.qty} (${formatPrice(item.price * item.qty)})%0A`;
+      });
+
+      const total = basket.reduce((s, i) => s + i.price * i.qty, 0);
+      message += `%0ATotal: ${formatPrice(total)}`;
+
+      window.open(`https://wa.me/254725820123?text=${message}`, '_blank');
+
+      basket = [];
+      updateBasketUI();
+      popup.classList.remove('active');
     });
+  }
 
-    const total = basket.reduce((s, i) => s + i.price * i.qty, 0);
-    message += `%0ATotal: ${formatPrice(total)}`;
-
-    window.open(`https://wa.me/254725820123?text=${message}`, '_blank');
-
-    basket = [];
-    updateBasketUI();
-    popup.classList.remove('active');
-  });
-
-  // =============================
   // INIT
-  // =============================
   updateAllPrices();
   updateBasketUI();
 
