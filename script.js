@@ -160,16 +160,19 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // popup toggles
-  basketBtn.addEventListener('click', () => {
-    popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
-  });
-  closePopupBtn.addEventListener('click', () => { popup.style.display = 'none'; });
-  // also close if user clicks outside popup (optional)
-  window.addEventListener('click', (ev) => {
-    if (ev.target === popup) {
-      popup.style.display = 'none';
-    }
-  });
+basketBtn.addEventListener('click', () => {
+  popup.classList.add('active');
+});
+
+closePopupBtn.addEventListener('click', () => {
+  popup.classList.remove('active');
+});
+
+window.addEventListener('click', (ev) => {
+  if (ev.target === popup) {
+    popup.classList.remove('active');
+  }
+});
 
   // clear basket
   clearBasketBtn.addEventListener('click', () => {
