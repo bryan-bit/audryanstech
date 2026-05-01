@@ -163,15 +163,24 @@ nav a:hover, nav .active {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) scale(0);
-  transition: 0.3s ease-in-out;
-  pointer-events: none;
   opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: 0.25s ease-in-out;
+  z-index: 9999;
+  background: #111;
+  padding: 2rem;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 400px;
+  color: #fff;
 }
 
 .popup.active {
   transform: translate(-50%, -50%) scale(1);
-  pointer-events: auto;
   opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 }
 .popup h3 {
   text-align: center;
