@@ -36,19 +36,26 @@ document.addEventListener('DOMContentLoaded', () => {
   // =============================
   // UPDATE ALL PRODUCT PRICES
   // =============================
-  function updateAllPrices() {
-    document.querySelectorAll('.service-card').forEach(card => {
-      const pv = card.querySelector('.price-value');
-      if (!pv) return;
+ function updateAllPrices() {
+  document.querySelectorAll('.service-card').forEach(card => {
+    const pv = card.querySelector('.price-value');
+    if (!pv) return;
 
-      if (!pv.dataset.kes) {
-        pv.dataset.kes = pv.textContent.replace(/[^0-9]/g, '');
-      }
+    // ALWAYS store original KES price ONCE
+    if (!pv.dataset.kes) {
+      const raw = pv.textContent.replace(/[^0-9]/g, '');
+      pv.dataset.kes = parseInt(raw || 0);
+    }
 
-      const kes = parseInt(pv.dataset.kes);
-      pv.textContent = formatPrice(kes);
-    });
-  }
+    const kes = parseInt(pv.dataset.kes);
+
+    if (currency === "USD") {
+      pv.textContent = "$" + (kes / exchangeRate).toFixed(2);
+    } else {
+      pv.textContent = "KSh " + kes;
+    }
+  });
+}
 
   // =============================
   // CURRENCY SWITCH
@@ -58,6 +65,12 @@ document.addEventListener('DOMContentLoaded', () => {
     updateAllPrices();
     updateBasketUI();
   });
+  currencySelector.addEventListener("change", () => {
+  currency = currencySelector.value;
+  console.log("Currency switched to:", currency); // 👈 check this
+  updateAllPrices();
+  updateBasketUI();
+});
 
   // =============================
   // INIT CREDIT SELECTS
@@ -76,34 +89,18 @@ document.addEventListener('DOMContentLoaded', () => {
   // =============================
   // PRICE SELECT HANDLING
   // =============================
-  document.querySelectorAll('.service-card').forEach(card => {
-    const select = card.querySelector('.price-select');
-    const creditsSelect = card.querySelector('.credits-select');
+ if (select) {
+  function updateSelectPrice() {
+    const pv = card.querySelector('.price-value');
+    const value = parseInt(select.value);
 
-    if (creditsSelect) {
-      const CREDIT_PRICE = 150;
-      function updateCredits() {
-        const qty = parseInt(creditsSelect.value);
-        const total = qty * CREDIT_PRICE;
-        const pv = card.querySelector('.price-value');
-        pv.dataset.kes = total;
-        pv.textContent = formatPrice(total);
-      }
-      creditsSelect.addEventListener('change', updateCredits);
-      updateCredits();
-    }
+    pv.dataset.kes = value; // 🔥 THIS WAS MISSING
+    pv.textContent = formatPrice(value);
+  }
 
-    if (select) {
-      function updateSelectPrice() {
-        const pv = card.querySelector('.price-value');
-        const value = parseInt(select.value);
-        pv.dataset.kes = value;
-        pv.textContent = formatPrice(value);
-      }
-      select.addEventListener('change', updateSelectPrice);
-      updateSelectPrice();
-    }
-  });
+  select.addEventListener('change', updateSelectPrice);
+  updateSelectPrice();
+}
 
   // =============================
   // ADD TO BASKET
@@ -114,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const name = card.querySelector('h3').textContent;
       const pv = card.querySelector('.price-value');
 
-      const price = parseInt(pv.dataset.kes || pv.textContent.replace(/[^0-9]/g, ''));
+      const price = parseInt(pv.dataset.kes);
 
       addToBasket(name, price);
     });
