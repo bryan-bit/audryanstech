@@ -168,8 +168,8 @@ closePopupBtn.addEventListener('click', () => {
   popup.classList.remove('active');
 });
 
-window.addEventListener('click', (ev) => {
-  if (ev.target === popup) {
+popup.addEventListener('click', (e) => {
+  if (e.target === popup) {
     popup.classList.remove('active');
   }
 });
